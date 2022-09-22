@@ -1,7 +1,21 @@
-language: python
-python:
- - "3.5"
+version: 2.1
 
-# command to run tests
-script:
- - python -m unittest TestTriangle
+orbs:
+    python: circleci/python@2.0.1
+
+jobs:
+  build-and-test:
+    docker:
+      - image: cimg/python:3.10.2
+    steps:
+      - checkout
+      - run:
+          command: |
+            pip install pytest
+            pytest --junitxml=test-results/junit.xml TestTriangle.py
+      - store_test_results:
+          path: test-results
+workflows:
+  testing_triangles:
+    jobs:
+      - build-and-test
